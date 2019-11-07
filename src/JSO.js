@@ -24,6 +24,7 @@ import utils from './utils'
 import BasicLoader from './Loaders/BasicLoader'
 import HTTPRedirect from './Loaders/HTTPRedirect'
 import IFramePassive from './Loaders/IFramePassive'
+import IFrameActive from './Loaders/IFrameActive'
 import Popup from './Loaders/Popup'
 
 import Fetcher from './HTTP/Fetcher'
@@ -185,16 +186,20 @@ class JSO extends EventEmitter {
       utils.log("Received an authorization code. Will not process it as the config option [token] endpoint is not set. If you would like to process the code yourself, please subscribe to the [authorizationCode] event")
       return
     }
-    if (!this.config.has('client_secret')) {
+		/*
+		if (!this.config.has('client_secret')) {
       throw new Error("Configuration missing [client_secret]")
-    }
+		}
+		*/
     let headers = new Headers()
-    headers.append('Authorization', 'Basic ' + btoa(this.config.getValue('client_id') + ":" + this.config.getValue('client_secret')))
-    headers.append('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8')
+    //headers.append('Authorization', 'Basic ' + btoa(this.config.getValue('client_id') + ":" + this.config.getValue('client_secret')))
+    //headers.append('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8')
+    headers.append('Content-Type', 'application/x-www-form-urlencoded')
 
     let tokenRequest = {
       'grant_type': 'authorization_code',
-      'code': object.code
+			'client_id': this.config.getValue('client_id'),
+			'code': object.code
     }
 
     if (state.hasOwnProperty('redirect_uri')) {
@@ -501,6 +506,6 @@ class JSO extends EventEmitter {
 
 // Object.assign(JSO.prototype, new EventEmitter({}))
 
-export {JSO, BasicLoader, HTTPRedirect, Popup, IFramePassive, Fetcher, FetcherJQuery}
+export {JSO, BasicLoader, HTTPRedirect, Popup, IFramePassive, IFrameActive, Fetcher, FetcherJQuery}
 // Work in progress
 // Authentication
