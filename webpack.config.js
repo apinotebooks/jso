@@ -19,10 +19,8 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              ["env", {
-                  useBuiltIns: 'entry'
-              }],
-              "react"
+              ['@babel/preset-env', { targets: 'defaults', useBuiltIns: 'entry', corejs: 3}],
+              '@babel/preset-react'
             ]
           }
         }

@@ -11,14 +11,9 @@
     "postversion": "git push && git push --tags && npm publish",
     "build": "webpack --mode production --config webpack.config.js"
   },
-  "babel": {
-    "presets": [
-      "env"
-    ]
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/andreassolberg/jso.git"
+    "url": "https://github.com/vseraphin/jso.git"
   },
   "keywords": [
     "oauth",
@@ -40,13 +35,15 @@
     }
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.4",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "qunit": "^2.5.1",
-    "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12"
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
+    "@babel/runtime": "^7.12.5",
+    "babel-loader": "^8.2.2",
+    "qunit": "^2.13.0",
+    "webpack": "^5.10.0",
+    "webpack-cli": "^4.2.0"
   },
   "author": "Andreas Åkre Solberg",
   "license": "LGPL-2.1",
@@ -54,5 +51,7 @@
     "url": "https://github.com/andreassolberg/jso/issues"
   },
   "homepage": "https://github.com/andreassolberg/jso",
-  "dependencies": {}
+  "dependencies": {
+    "core-js": "^3.8.0"
+  }
 }
