@@ -200,7 +200,12 @@ class JSO extends EventEmitter {
       'grant_type': 'authorization_code',
 			'client_id': this.config.getValue('client_id'),
 			'code': object.code
-    }
+	}
+	
+	if( this.config.getValue('use_pkce', false ) ) {
+		// Also include the original created code_verifier
+		tokenRequest.code_verifier = state.code_verifier
+	}
 
     if (state.hasOwnProperty('redirect_uri')) {
       tokenRequest.redirect_uri = state.redirect_uri
@@ -377,6 +382,56 @@ class JSO extends EventEmitter {
 		return this.store.getToken(this.providerID, scopesRequire)
 	}
 
+	/*
+	 * 2nd portion of authorize method.  Was put into its own method to cope with an optional async path that happens when
+	 *  use_pkce is specified
+	 */
+	_authorize2(opts, request, cv, scopes) {
+	
+		let authorization = this.config.getValue('authorization', null, true)
+
+		utils.log("Debug Authentication request object", JSON.stringify(request, undefined, 2))
+
+		var authurl = utils.encodeURL(authorization, request)
+
+		// After authurl has been established, some other state is stored within the request object which is persisted
+		// Keep generated code_verifier around as we need to send it with the code challenge to retrieve token
+		let bUsePKCE = this.config.getValue('use_pkce', false);
+		if( bUsePKCE ) {
+			request.code_verifier = cv;
+		}
+
+		// We'd like to cache the hash for not loosing Application state.
+		// With the implciit grant flow, the hash will be replaced with the access
+		// token when we return after authorization.
+		if (window.location.hash) {
+			request.restoreHash = window.location.hash
+		}
+		request.providerID = this.providerID
+		// If there were specific scopes established, save within state
+		if (scopes) {
+			request.scopes = scopes
+		}
+
+		utils.log("Saving state [" + request.state + "]")
+		utils.log(JSON.parse(JSON.stringify(request)))
+
+		var loader = this.Loader
+		if (opts.hasOwnProperty("loader")) {
+			loader = opts.loader
+		}
+
+		utils.log("Looking for loader", opts, loader)
+
+		this.store.saveState(request.state, request)
+		return this.gotoAuthorizeURL(authurl, loader)
+			.then((response) => {
+	  			if (response !== true) {
+					return this.callback(response)
+	  			}
+			})
+
+	}
 
 	/**
 	 * Send authorization request.
@@ -387,7 +442,6 @@ class JSO extends EventEmitter {
 	_authorize(opts) {
 		var
 			request,
-			authurl,
 			scopes
 
 		return Promise.resolve().then(() => {
@@ -443,42 +497,34 @@ class JSO extends EventEmitter {
 
       if (openid) {
         request.nonce = utils.uuid()
-      }
-
-			utils.log("Debug Authentication request object", JSON.stringify(request, undefined, 2))
-
-			authurl = utils.encodeURL(authorization, request)
-
-			// We'd like to cache the hash for not loosing Application state.
-			// With the implciit grant flow, the hash will be replaced with the access
-			// token when we return after authorization.
-			if (window.location.hash) {
-				request.restoreHash = window.location.hash
+	  }
+	  
+		// If pkce is being utilized, create random code_verifier and create challenge
+		let cv = null;
+		let bUsePKCE = this.config.getValue('use_pkce', false);
+	  	if( bUsePKCE ) {
+		  	if( !window.crypto ) {
+			  	throw new Error('Browser crypto APIs are not available')
 			}
-			request.providerID = this.providerID
-			if (scopes) {
-				request.scopes = scopes
+			
+			// Generate a 128 byte random string (or is 64 byte sufficient)
+			// var buf = new ArrayBuffer(32)
+			var buf = new Uint8Array(64)
+			window.crypto.getRandomValues(buf)
+			cv = utils.base64UrlSafeEncode(buf)
+
+			utils.getCodeChallenge(cv).then( cc => {
+				request.code_challenge = cc
+				//Generate string sequence
+				request.code_challenge_method = "S256"
+
+				return this._authorize2(opts, request, cv, scopes);
+				} 
+			)
+		} else {
+
+			return this._authorize2(opts, request, cv, scopes);
 			}
-
-
-			utils.log("Saving state [" + request.state + "]")
-			utils.log(JSON.parse(JSON.stringify(request)))
-
-			var loader = this.Loader
-			if (opts.hasOwnProperty("loader")) {
-				loader = opts.loader
-			}
-
-			utils.log("Looking for loader", opts, loader)
-
-			this.store.saveState(request.state, request)
-			return this.gotoAuthorizeURL(authurl, loader)
-				.then((response) => {
-          if (response !== true) {
-            return this.callback(response)
-          }
-				})
-
 
 		})
 

@@ -1,4 +1,3 @@
-
 let utils = {}
 
 /*
@@ -123,5 +122,37 @@ utils.encodeURL = function(url, params) {
 	return res
 }
 
+
+utils.sha256Hash = function (str) {
+	return window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+}
+
+// Base64 encode
+utils.encode64 = function (buff) {
+	return btoa(new Uint8Array(buff).reduce((s, b) => s + String.fromCharCode(b), ''));
+}
+
+/* 
+ * Base64 url safe encoding of an array
+ */
+utils.base64UrlSafeEncode = function(buf) {
+	const s = utils.encode64(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
+	return s
+}
+
+
+/* Calc code verifier if necessary
+ */
+utils.getCodeChallenge = function(code_verifier) {
+	return utils.sha256Hash(code_verifier).then (
+		(hashed) => { 
+			return utils.base64UrlSafeEncode(hashed)
+	}
+	).catch(
+		(error) => { utils.log(error) }
+	).finally(
+		() => { return null }
+	)
+}
 
 export default utils
