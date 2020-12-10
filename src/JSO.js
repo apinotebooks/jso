@@ -185,16 +185,14 @@ class JSO extends EventEmitter {
     if (!this.config.has('token')) {
       utils.log("Received an authorization code. Will not process it as the config option [token] endpoint is not set. If you would like to process the code yourself, please subscribe to the [authorizationCode] event")
       return
-    }
-		/*
-		if (!this.config.has('client_secret')) {
-      throw new Error("Configuration missing [client_secret]")
-		}
-		*/
-    let headers = new Headers()
-    //headers.append('Authorization', 'Basic ' + btoa(this.config.getValue('client_id') + ":" + this.config.getValue('client_secret')))
-    //headers.append('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8')
-    headers.append('Content-Type', 'application/x-www-form-urlencoded')
+	}
+	
+	let headers = new Headers()
+	// Public client registration will not include a client_secret
+	if( this.config.has('client_secret') ) {
+    	headers.append('Authorization', 'Basic ' + btoa(this.config.getValue('client_id') + ":" + this.config.getValue('client_secret')))
+	}
+    headers.append('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8')
 
     let tokenRequest = {
       'grant_type': 'authorization_code',
@@ -386,7 +384,7 @@ class JSO extends EventEmitter {
 	 * 2nd portion of authorize method.  Was put into its own method to cope with an optional async path that happens when
 	 *  use_pkce is specified
 	 */
-	_authorize2(opts, request, cv, scopes) {
+	_authorize2(opts, request, code_verifier, scopes) {
 	
 		let authorization = this.config.getValue('authorization', null, true)
 
@@ -398,7 +396,7 @@ class JSO extends EventEmitter {
 		// Keep generated code_verifier around as we need to send it with the code challenge to retrieve token
 		let bUsePKCE = this.config.getValue('use_pkce', false);
 		if( bUsePKCE ) {
-			request.code_verifier = cv;
+			request.code_verifier = code_verifier;
 		}
 
 		// We'd like to cache the hash for not loosing Application state.
@@ -507,8 +505,8 @@ class JSO extends EventEmitter {
 			  	throw new Error('Browser crypto APIs are not available')
 			}
 			
-			// Generate a 128 byte random string (or is 64 byte sufficient)
-			// var buf = new ArrayBuffer(32)
+			// RFC 7636 says the random string should be between 43 and 128 chars
+			// Use 64 char buf for now
 			var buf = new Uint8Array(64)
 			window.crypto.getRandomValues(buf)
 			cv = utils.base64UrlSafeEncode(buf)
