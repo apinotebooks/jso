@@ -40,6 +40,7 @@
     "@babel/preset-react": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
     "@babel/runtime": "^7.12.5",
+    "@types/core-js": "^2.5.4",
     "babel-loader": "^8.2.2",
     "qunit": "^2.13.0",
     "webpack": "^5.10.0",
@@ -52,6 +53,6 @@
   },
   "homepage": "https://github.com/andreassolberg/jso",
   "dependencies": {
-    "core-js": "^3.8.0"
+    "core-js": "^3.8.1"
   }
 }

@@ -83,6 +83,7 @@ Options to JSO constructor
 * `redirect_uri`: **OPTIONAL** (may be needed by the provider). The URI that the user will be redirected back to when completed. This should be the same URL that the page is presented on.
 * `scopes.require`: Control what scopes are required in the authorization request. This list if used when looking through cached tokens to see if we would like to use any of the existing.
 * `scopes.request`: Control what scopes are requested in the authorization request. When none of the cached tokens will be used, and a new one will be request, the `scopes.request` list will be included in the authorization request.
+* `use_pkce`: **OPTIONAL** Specify whether to use "Proof Key for Code Exchange" with the "Authorization Code" grant flow
 * `default_lifetime` : Seconds with default lifetime of an access token. If set to `false`, it means permanent. Default is 3600. This only matters if expires_in was not sent from the server, which should ALWAYS be the case.
 * `permanent_scope`: A scope that indicates that the lifetime of the access token is infinite. (not well-tested.)
 * `response_type`: Default response_type for all authorization requests. Default: `token`. Can be overriden to in example use OpenID Connect
@@ -293,6 +294,7 @@ Then use the `client.setLoader(Loader)` to use the custom loader. Out of the box
 * HTTPRedirect - default usage
 * Popup
 * IFramePassive
+* IFrameActive
 
 
 

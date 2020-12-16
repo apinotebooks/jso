@@ -10,9 +10,9 @@
 
 
 // Polyfills to support >= IE10
-import assign from 'core-js/es/object/assign'
-import 'core-js/es/array/includes'
-import 'core-js/es/promise'
+import assign from 'core-js/features/object/assign'
+import 'core-js/features/array/includes'
+import 'core-js/features/promise'
 // ------
 
 import store from './store'
