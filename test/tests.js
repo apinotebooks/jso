@@ -5,7 +5,7 @@
 // console.log(jso.JSO)
 var JSO = jso.JSO
 var config = {
-  providerID: "google",
+  connector_name: "google",
   client_id: "541950296471.apps.googleusercontent.com",
   redirect_uri: "http://bridge.uninett.no/jso/index.html",
   authorization: "https://accounts.google.com/o/oauth2/auth",

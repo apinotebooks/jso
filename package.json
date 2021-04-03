@@ -9,7 +9,8 @@
     "preversion": "npm test",
     "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags && npm publish",
-    "build": "webpack --mode production --config webpack.config.js"
+    "build": "webpack --mode production --config webpack.config.js",
+    "start": "webpack --mode development --config webpack.start.config.js && npx http-server examples -o -p 3000 -c-1"
   },
   "repository": {
     "type": "git",
@@ -52,7 +53,5 @@
     "url": "https://github.com/andreassolberg/jso/issues"
   },
   "homepage": "https://github.com/andreassolberg/jso",
-  "dependencies": {
-    "core-js": "^3.8.1"
-  }
+  "dependencies": {}
 }

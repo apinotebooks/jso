@@ -1,17 +1,20 @@
 export default class Config {
 
 	constructor() {
-    this.config = {}
-		for(var i = 0; i < arguments.length; i++) {
-      Object.assign(this.config, arguments[i])
+		this.config = {}
+		for (var i = 0; i < arguments.length; i++) {
+			Object.assign(this.config, arguments[i]);
 		}
+
+		// enable pkce when token endpoint is provided
+		if(this.config.token) this.config.use_pkce = true;
 	}
 
 	has(key) {
 		var pointer = this.config
 		var splittedKeys = key.split('.')
 		var i = 0
-		for(i = 0; i < splittedKeys.length; i++) {
+		for (i = 0; i < splittedKeys.length; i++) {
 			if (pointer.hasOwnProperty(splittedKeys[i])) {
 				pointer = pointer[splittedKeys[i]]
 			} else {
@@ -26,7 +29,7 @@ export default class Config {
 		var pointer = this.config
 		var splittedKeys = key.split('.')
 		var i = 0
-		for(i = 0; i < splittedKeys.length; i++) {
+		for (i = 0; i < splittedKeys.length; i++) {
 
 			if (pointer.hasOwnProperty(splittedKeys[i])) {
 				// console.log("POINTING TO " + splittedKeys[i]);

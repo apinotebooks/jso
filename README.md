@@ -67,7 +67,7 @@ To start using JSO, you need to initialize a new JSO object with configuration f
 
 ```javascript
 let client = new JSO({
-	providerID: "google",
+	connector_name: "google",
 	client_id: "541950296471.apps.googleusercontent.com",
 	redirect_uri: "http://localhost:8080/", // The URL where you is redirected back, and where you perform run the callback() function.
 	authorization: "https://accounts.google.com/o/oauth2/auth",
@@ -77,7 +77,7 @@ let client = new JSO({
 
 Options to JSO constructor
 
-* `providerID`: **OPTIONAL** This is just a name tag that is used to prefix data stored in the browser. It can be anything you'd like :)
+* `connector_name`: **OPTIONAL** This is just a name tag that is used to prefix data stored in the browser. It can be anything you'd like :)
 * `client_id`: **REQUIRED** The client idenfier of your client that is trusted by the provider. As JSO uses the implicit grant flow, there is no use for a client secret.
 * `authorization`: **REQUIRED** The authorization URL endpoint of the OAuth server
 * `redirect_uri`: **OPTIONAL** (may be needed by the provider). The URI that the user will be redirected back to when completed. This should be the same URL that the page is presented on.

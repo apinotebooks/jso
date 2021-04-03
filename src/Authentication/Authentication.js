@@ -46,7 +46,7 @@ export default class Authentication extends EventEmitter {
 //
 // 			var that = this;
 // 			var defaults = {
-// 				"providerId"	: "feideconnect",
+// 				"connector_name"	: "feideconnect",
 //
 // 				"client_id"		: "c148bc3f-6b15-47d7-ad23-3c36677eb8b5",
 // 				"redirect_uri"	: "https://min.dev.feideconnect.no/index.dev.html",
