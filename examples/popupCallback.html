@@ -5,16 +5,33 @@
 	<meta charset="utf-8">
 	<title>Successfully logged in</title>
 	<script type="text/javascript">
-		window.onload = function () {		
-			window.opener.postMessage({ status: "ok", "href": window.location.href},"*");
-			setTimeout(function () {
-				window.close();
-			}, 200);
+		window.onload = function () {
+			var urlParams = new URLSearchParams(window.location.search);
+			var error = urlParams.get('error');
+
+			if (!error) {
+				window.opener.postMessage({ status: "oauth_callback_ok", "href": window.location.href }, "*");
+				setTimeout(function () {
+					window.close();
+				}, 200);
+			} else {
+				var errorPage = document.getElementById("errorPage");
+				var header = document.getElementById("header");
+				var message = document.getElementById("message");
+
+				header.innerText = "Error: " + error;
+				message.innerText = urlParams.get('error_description');
+				errorPage.style.display = "block";
+			}
 		};
 	</script>
 </head>
 
 <body>
+	<div id="errorPage" style="display:none">
+		<h1 id="header"></h1>
+		<div id="message"></div>
+	</div>
 </body>
 
 </html>

@@ -5,7 +5,7 @@ jQuery(function ($) {
 
 window.addEventListener("message", (event) => {
   debugger;
-  if (event.data.status == "ok") {
+  if (event.data.status == "oauth_callback_ok") {
     jsodemo.oauthCallback(event.data.href);
   } else {
     console.error("unexpected message" + event.data);

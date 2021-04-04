@@ -22,8 +22,8 @@ export default class Popup extends BasicLoader {
 				resolve(url)
 			}
 
-			var w = 400;
-			var h = 600;
+			var w = 420;
+			var h = 650;
 			var left = (screen.width/2)-(w/2);
 			var top = (screen.height/2)-(h/2);
 
